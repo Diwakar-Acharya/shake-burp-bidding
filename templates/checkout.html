@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+<h1>
+
+Checkout
+
+</h1>
+
+
+<h3>
+
+Winning Amount
+
+₹{{bid.amount}}
+
+</h3>
+
+
+<form method="POST">
+
+{% csrf_token %}
+
+{{form.as_p}}
+
+<button
+class="btn btn-light">
+
+SAVE ADDRESS
+
+</button>
+
+</form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+<nav class="navbar navbar-expand-lg fixed-top navbar-glass" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand text-white fw-bold d-flex align-items-center gap-2" href="/" style="font-size: 1.5rem; letter-spacing: 2px;">
+            SHAKE<span style="color: rgba(255,255,255,0.3);">&</span>BURP
+        </a>
+
+        <div class="d-flex align-items-center gap-3">
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                    <a href="/owner/" class="btn-outline-premium text-decoration-none">Dashboard</a>
+                {% endif %}
+                
+                <div class="user-glass-badge">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                    </svg>
+                    {{ user.username }}
+                </div>
+
+                <a href="/auth/logout/" class="btn-outline-premium text-decoration-none">Logout</a>
+            {% else %}
+                <button class="btn-outline-premium" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    Login
+                </button>
+                <button class="btn-premium py-2 px-4" data-bs-toggle="modal" data-bs-target="#registerModal">
+                    Register
+                </button>
+            {% endif %}
+        </div>
+    </div>
+</nav>

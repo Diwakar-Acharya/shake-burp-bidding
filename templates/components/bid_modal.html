@@ -1,0 +1,31 @@
+<div class="modal fade" id="bidModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header border-0 pb-0 px-4 pt-4">
+                <h3 class="mb-0 fw-bold">Place Bid</h3>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <form method="POST" action="/bid/">
+                    {% csrf_token %}
+                    <input name="product" type="hidden" value="{{product.id}}">
+
+                    <div class="mb-4 text-center glass-panel p-3 rounded-4">
+                        <span class="text-muted text-uppercase" style="font-size: 0.8rem;">Current Price</span><br>
+                        <span class="price-tag fs-3">₹{{product.current_price}}</span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label>Your Bid Amount (₹)</label>
+                        <input required name="amount" step="0.01" type="number" class="form-control form-control-lg" placeholder="Enter amount...">
+                    </div>
+
+                    <button class="btn-premium w-100 mt-2">
+                        Confirm Bid
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

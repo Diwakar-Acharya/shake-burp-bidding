@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+/* =========================
+   DASHBOARD SPECIFIC OVERRIDES
+========================= */
+
+/* Account for the fixed navbar */
+.dashboard-wrapper {
+    padding-top: 120px;
+    padding-bottom: 80px;
+}
+
+/* 1. Catching Django's raw {{form.as_p}} outputs */
+.dashboard-form p {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.dashboard-form label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    margin-left: 4px;
+    display: block;
+}
+
+/* Force standard inputs to match our glass aesthetic */
+.dashboard-form input[type="text"],
+.dashboard-form input[type="number"],
+.dashboard-form input[type="email"],
+.dashboard-form textarea,
+.dashboard-form select {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 1rem;
+    font-weight: 300;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.dashboard-form input:focus,
+.dashboard-form textarea:focus,
+.dashboard-form select:focus {
+    background: rgba(0, 0, 0, 0.6);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+    outline: none;
+}
+
+.dashboard-form textarea {
+    min-height: 140px;
+}
+
+/* 2. Custom File Upload Styling */
+.dashboard-form input[type="file"] {
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    width: 100%;
+    color: #a1a1aa;
+    cursor: pointer;
+}
+
+.dashboard-form input[type="file"]::file-selector-button {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    margin-right: 15px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.dashboard-form input[type="file"]::file-selector-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.dashboard-form input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #fff;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+/* 3. Premium Table Styling */
+.premium-table-wrapper {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.table-premium {
+    margin-bottom: 0;
+    color: #e4e4e7;
+}
+
+.table-premium th {
+    background: rgba(0, 0, 0, 0.4);
+    color: #a1a1aa;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.table-premium td {
+    background: transparent;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    vertical-align: middle;
+}
+
+.table-premium tbody tr {
+    transition: background 0.3s ease;
+}
+
+.table-premium tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.status-badge {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+</style>
+
+<div class="container dashboard-wrapper">
+
+    <div class="animate-up">
+        <h1 class="display-1 mb-5" style="font-size: 3.5rem;">OWNER DASHBOARD</h1>
+    </div>
+
+    <div class="row g-5">
+
+        <div class="col-lg-7 animate-up delay-1">
+            <div class="glass-panel p-4 p-lg-5">
+                <h3 class="mb-4 fw-bold" style="letter-spacing: 1px;">EDIT PRODUCT</h3>
+
+                <form method="POST" enctype="multipart/form-data" class="dashboard-form">
+                    {% csrf_token %}
+                    
+                    {{ form.as_p }}
+
+                    <button type="submit" class="btn-premium w-100 mt-4 py-3">
+                        SAVE PRODUCT
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-5 animate-up delay-2">
+            {% if product %}
+            <div class="glass-panel p-4 p-lg-5 sticky-lg-top" style="top: 120px;">
+                <h3 class="mb-4 fw-bold" style="letter-spacing: 1px;">LIVE PREVIEW</h3>
+
+                <div class="product-showcase mb-4">
+                    <img src="{{product.image.url}}" class="w-100" alt="{{product.name}} preview">
+                </div>
+
+                <h2 class="mb-3 fw-bold">{{product.name}}</h2>
+
+                <p class="story-text mb-4">
+                    {{product.description}}
+                </p>
+
+                <div class="price-tag fs-2">
+                    ₹{{product.current_price}}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <div class="row mt-5 pt-4 animate-up delay-2">
+        <div class="col-12">
+            <div class="glass-panel p-4 p-lg-5">
+                <h3 class="mb-4 fw-bold" style="letter-spacing: 1px;">RECENT ORDERS / BIDS</h3>
+
+                <div class="premium-table-wrapper">
+                    <table class="table table-premium table-hover">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Bid</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bid in bids %}
+                            <tr>
+                                <td class="fw-bold">{{bid.user.username}}</td>
+                                <td class="text-muted">{{bid.user.email}}</td>
+                                <td class="price-tag fs-5 mb-0" style="text-shadow: none;">₹{{bid.amount}}</td>
+                                <td>
+                                    <span class="status-badge">{{bid.payment}}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

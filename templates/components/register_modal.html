@@ -1,0 +1,46 @@
+<div class="modal fade" id="registerModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header border-0 pb-0 px-4 pt-4">
+                <h3 class="mb-0 fw-bold">Create Account</h3>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <form method="POST" action="/auth/register/">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label>Email Address</label>
+                        <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Username</label>
+                            <input type="text" name="username" class="form-control" placeholder="johndoe" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Phone (Optional)</label>
+                            <input type="text" name="phone" class="form-control" placeholder="+91...">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <input type="password" name="password1" class="form-control" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label>Confirm Password</label>
+                        <input type="password" name="password2" class="form-control" placeholder="••••••••" required>
+                    </div>
+
+                    <button class="btn-premium w-100">
+                        Join Now
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

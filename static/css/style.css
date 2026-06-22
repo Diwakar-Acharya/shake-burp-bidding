@@ -1,0 +1,352 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
+/* =========================
+   GLOBAL VARIABLES & RESET
+========================= */
+:root {
+    --bg-dark: #050507;
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --text-main: #ffffff;
+    --text-muted: #a1a1aa;
+    --accent: #ffffff;
+}
+
+body {
+    background: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================
+   LIVE BACKGROUND ANIMATION
+========================= */
+.bg-orbs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -2; /* Keeps it behind everything */
+    pointer-events: none;
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px); /* Creates the soft glow */
+    opacity: 0.5;
+    animation: floatOrb 25s infinite alternate ease-in-out;
+}
+
+/* Deep Red/Crimson Orb */
+.orb-1 {
+    width: 450px; 
+    height: 450px;
+    background: rgba(200, 10, 30, 0.15); 
+    top: -10%; 
+    left: -10%;
+}
+
+/* Subtle Blue/Gray Orb */
+.orb-2 {
+    width: 600px; 
+    height: 600px;
+    background: rgba(100, 120, 150, 0.1);
+    bottom: -20%; 
+    right: -10%;
+    animation-delay: -5s;
+}
+
+/* Bright White Center Orb */
+.orb-3 {
+    width: 300px; 
+    height: 300px;
+    background: rgba(255, 255, 255, 0.05);
+    top: 40%; 
+    left: 50%;
+    animation-delay: -10s;
+}
+
+@keyframes floatOrb {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(150px, 80px) scale(1.2); }
+    100% { transform: translate(-100px, 200px) scale(0.9); }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+
+
+
+
+
+/* Fix for the missing 'N' - Forces long words to break instead of getting cut off */
+.display-1 {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+/* New Glass Badge for the Username */
+.user-glass-badge {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 8px 20px;
+    border-radius: 50px;
+    color: #ffffff;
+    font-weight: 500;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: default;
+}
+
+/* Dynamic Navbar Background for Scrolling */
+.navbar-glass {
+    background: transparent; /* Fully transparent at the very top */
+    backdrop-filter: blur(0px);
+    border-bottom: 1px solid transparent;
+    padding: 20px 0;
+    transition: all 0.4s ease; /* Smooth transition */
+}
+
+/* This class gets added by JavaScript when you scroll down */
+.navbar-glass.nav-scrolled {
+    background: rgba(5, 5, 7, 0.95); /* Deep dark glass */
+    backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 10px 0; /* Shrinks slightly for a sleeker look */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+/* =========================
+   TYPOGRAPHY
+========================= */
+.display-1 {
+    font-weight: 800;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, #fff 0%, #71717a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+h2, h3 { font-weight: 600; }
+
+.price-tag {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    text-shadow: 0 0 30px rgba(255,255,255,0.2);
+}
+
+.story-text {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    font-weight: 300;
+}
+
+/* =========================
+   GLASS PANELS
+========================= */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.modal-content {
+    background: rgba(10, 10, 12, 0.85) !important;
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+}
+
+.modal-header { border-bottom: 1px solid rgba(255,255,255,0.05); }
+.btn-close-white { opacity: 0.5; transition: 0.3s; }
+.btn-close-white:hover { opacity: 1; transform: rotate(90deg); }
+
+/* =========================
+   FORM INPUTS
+========================= */
+.form-control {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 1rem;
+    font-weight: 300;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background: rgba(0, 0, 0, 0.6) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05) !important;
+}
+
+label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    margin-left: 4px;
+}
+
+/* =========================
+   BUTTONS & NAVBAR FIXES
+========================= */
+.btn-premium {
+    background: #fff;
+    color: #000 !important;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-premium:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(255, 255, 255, 0.15);
+    background: #f4f4f5;
+}
+
+.btn-outline-premium {
+    background: rgba(255, 255, 255, 0.05); /* Slight tint so you see the button box */
+    color: #ffffff !important; /* Force white text */
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 8px 20px;
+    border-radius: 50px;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.btn-outline-premium:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: #fff;
+    color: #ffffff !important;
+}
+
+/* Force navbar text to be white */
+.navbar-nav-text {
+    color: #ffffff !important;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* =========================
+   IMAGE & CAROUSEL
+========================= */
+.product-showcase {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.product-showcase img {
+    transform: scale(1.01);
+    transition: transform 0.7s ease;
+}
+
+.product-showcase:hover img {
+    transform: scale(1.04);
+}
+
+/* =========================
+   FOOTER STYLES (Upgraded)
+========================= */
+.premium-footer {
+    background: rgba(5, 5, 7, 0.95);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 60px 0 30px;
+    margin-top: auto; 
+    backdrop-filter: blur(20px);
+    position: relative; 
+    z-index: 100; 
+    width: 100%;
+}
+
+/* Force all links in footer to never have underlines */
+.premium-footer a {
+    text-decoration: none !important;
+}
+
+.footer-brand {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #ffffff !important; /* Force white, override blue */
+}
+
+/* Fix the invisible description text */
+.premium-footer .text-muted {
+    color: #a1a1aa !important; /* Light gray so you can actually read it */
+    opacity: 0.9;
+}
+
+/* Fix the lists and link colors */
+.footer-links {
+    list-style: none !important; /* Kills the bullet points */
+    padding-left: 0 !important;  /* Removes the weird left spacing */
+    margin: 0;
+}
+
+.footer-links li { 
+    margin-bottom: 12px; 
+}
+
+.footer-links a {
+    color: #a1a1aa !important; /* Force light gray, override blue */
+    transition: all 0.3s ease;
+    font-weight: 300;
+}
+
+.footer-links a:hover {
+    color: #ffffff !important; /* Brightens on hover */
+    padding-left: 5px; /* Creates that cool slide-right effect */
+}
+
+/* Social icons */
+.social-placeholder {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; 
+    height: 40px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    color: #ffffff !important;
+    margin-right: 10px;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+.social-placeholder:hover {
+    background: #ffffff;
+    color: #000000 !important;
+    transform: translateY(-3px);
+}
