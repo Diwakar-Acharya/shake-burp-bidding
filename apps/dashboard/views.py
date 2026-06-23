@@ -9,10 +9,6 @@ staff_member_required
 
 from apps.auction.models import *
 
-from .forms import (
-ProductEditForm
-)
-
 
 
 @staff_member_required
@@ -22,67 +18,31 @@ def owner_dashboard(request):
     product=AuctionProduct.objects.first()
 
 
-    bids=[]
-
-    form=None
-
-
-    if product:
-
-        bids=Bid.objects.filter(
-            product=product
-        ).order_by(
-            '-amount'
-        )
-
-        form=ProductEditForm(
-            instance=product
-        )
-
-
-    if request.method=="POST":
-
-        form=ProductEditForm(
-
-            request.POST,
-
-            request.FILES,
-
-            instance=product
-
-        )
-
-        if form.is_valid():
-
-            form.save()
-
-            return redirect(
-                '/owner/'
-            )
+    bids=Bid.objects.all().order_by(
+        '-created'
+    )
 
 
     return render(
 
-        request,
+request,
 
-        'dashboard/dashboard.html',
+'dashboard/dashboard.html',
 
-        {
+{
 
-            'product':product,
+'product':product,
 
-            'bids':bids,
+'bids':bids
 
-            'form':form
+}
 
-        }
-
-    )
+)
 
 
 
 @staff_member_required
-def payment_done(
+def approve_bid(
 
 request,
 
@@ -96,7 +56,41 @@ bid_id
     )
 
 
-    bid.payment='paid'
+    bid.status='approved'
+
+    bid.save()
+
+
+    product=bid.product
+
+
+    product.current_price=bid.amount
+
+    product.save()
+
+
+    return redirect(
+        '/owner/'
+    )
+
+
+
+@staff_member_required
+def reject_bid(
+
+request,
+
+bid_id
+
+):
+
+
+    bid=Bid.objects.get(
+        id=bid_id
+    )
+
+
+    bid.status='rejected'
 
     bid.save()
 

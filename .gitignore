@@ -18,3 +18,10 @@ env/
 # OS generated files #
 .DS_Store
 Thumbs.db
+
+
+
+
+// git add .
+// git commit -m "Describe what you changed (e.g., fixed footer CSS)"
+// git push

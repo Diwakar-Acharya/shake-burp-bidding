@@ -11,8 +11,13 @@ owner_dashboard
 ),
 
 path(
-'payment/<int:bid_id>/',
-payment_done
+'approve/<int:bid_id>/',
+approve_bid
+),
+
+path(
+'reject/<int:bid_id>/',
+reject_bid
 )
 
 ]

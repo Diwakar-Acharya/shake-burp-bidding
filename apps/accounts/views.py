@@ -1,84 +1,149 @@
 from django.shortcuts import (
-render,
-redirect
+    redirect,
+    render
 )
 
 from django.contrib.auth import (
-login,
-logout,
-authenticate
+    login,
+    logout,
+    authenticate
 )
 
-from .forms import (
-RegisterForm,
-LoginForm
-)
+from django.contrib.auth.models import User
+
+from .models import UserProfile
 
 
-def register_view(
-request
+
+# -------------------
+# EMAIL VERIFY
+# -------------------
+
+def verify_email(
+    request,
+    token
 ):
 
-    if request.method=="POST":
+    try:
 
-        form=RegisterForm(
-            request.POST
+        profile = UserProfile.objects.get(
+            verification_token=token
         )
 
-        if form.is_valid():
+        profile.email_verified = True
 
-            user=form.save()
+        profile.save()
 
-            login(
-                request,
-                user
-            )
+    except:
 
-            return redirect(
-                '/'
-            )
+        pass
+
 
     return redirect('/')
 
 
 
-def login_view(
-request
+# -------------------
+# LOGOUT
+# -------------------
+
+def logout_view(
+    request
 ):
 
-    if request.method=="POST":
+    logout(request)
 
-        email=request.POST.get(
-            'username'
+    return redirect('/')
+
+
+
+# -------------------
+# LOGIN
+# -------------------
+
+def login_view(
+    request
+):
+
+    if request.method == "POST":
+
+        username = request.POST.get(
+            "username"
         )
 
-        password=request.POST.get(
-            'password'
+        password = request.POST.get(
+            "password"
         )
 
-        user=authenticate(
+
+        user = authenticate(
+
             request,
-            username=email,
+
+            username=username,
+
             password=password
+
         )
+
 
         if user:
 
             login(
+
                 request,
+
                 user
+
             )
+
 
     return redirect('/')
 
 
 
-def logout_view(
-request
+# -------------------
+# REGISTER
+# -------------------
+
+def register_view(
+    request
 ):
 
-    logout(
-        request
-    )
+    if request.method == "POST":
+
+        username = request.POST.get(
+            "username"
+        )
+
+        email = request.POST.get(
+            "email"
+        )
+
+        password = request.POST.get(
+            "password"
+        )
+
+
+        if not User.objects.filter(
+            username=username
+        ).exists():
+
+            user = User.objects.create_user(
+
+                username=username,
+
+                email=email,
+
+                password=password
+
+            )
+
+            UserProfile.objects.create(
+
+                user=user
+
+            )
+
 
     return redirect('/')

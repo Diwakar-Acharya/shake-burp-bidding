@@ -1,29 +1,64 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-from django.contrib.auth.models import (
-    AbstractUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db import models
+from django.contrib.auth.models import User
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+class UserProfile(models.Model):
+
+    user=models.OneToOneField(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    email_verified=models.BooleanField(
+        default=False
+    )
+
+    verification_token=models.CharField(
+        max_length=300,
+        blank=True
+    )
+
+    def __str__(self):
+
+        return self.user.username
+    
+
+
+    from django.db.models.signals import post_save
+
+from django.dispatch import receiver
+
+
+
+@receiver(
+post_save,
+sender=User
 )
 
+def create_profile(
 
-class User(
-    AbstractUser
+sender,
+
+instance,
+
+created,
+
+**kwargs
+
 ):
 
-    email=models.EmailField(
-        unique=True
-    )
 
-    phone=models.CharField(
-        max_length=20,
-        blank=True
-    )
+    if created:
 
-    address=models.TextField(
-        blank=True
-    )
+        UserProfile.objects.create(
 
-    USERNAME_FIELD='email'
+            user=instance
 
-    REQUIRED_FIELDS=[
-        'username'
-    ]
+        )

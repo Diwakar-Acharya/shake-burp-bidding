@@ -1,31 +1,221 @@
 <div class="modal fade" id="bidModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0">
-            <div class="modal-header border-0 pb-0 px-4 pt-4">
-                <h3 class="mb-0 fw-bold">Place Bid</h3>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
 
-            <div class="modal-body p-4">
-                <form method="POST" action="/bid/">
-                    {% csrf_token %}
-                    <input name="product" type="hidden" value="{{product.id}}">
+<div class="modal-dialog modal-dialog-centered">
 
-                    <div class="mb-4 text-center glass-panel p-3 rounded-4">
-                        <span class="text-muted text-uppercase" style="font-size: 0.8rem;">Current Price</span><br>
-                        <span class="price-tag fs-3">₹{{product.current_price}}</span>
-                    </div>
+<div class="modal-content border-0 glass-panel">
 
-                    <div class="mb-4">
-                        <label>Your Bid Amount (₹)</label>
-                        <input required name="amount" step="0.01" type="number" class="form-control form-control-lg" placeholder="Enter amount...">
-                    </div>
+<div class="modal-header border-0 px-4 pt-4">
 
-                    <button class="btn-premium w-100 mt-2">
-                        Confirm Bid
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
+<h2 class="fw-bold">
+
+PLACE BID
+
+</h2>
+
+<button
+type="button"
+class="btn-close btn-close-white"
+data-bs-dismiss="modal">
+</button>
+
 </div>
+
+
+<div class="modal-body p-4">
+
+<form
+method="POST"
+action="/bid/"
+id="bidForm"
+>
+
+{% csrf_token %}
+
+<input
+type="hidden"
+name="product"
+value="{{product.id}}"
+>
+
+
+<div
+class="glass-panel
+p-4
+mb-4
+text-center"
+>
+
+<div
+class="text-muted
+mb-2"
+style="
+letter-spacing:2px;
+font-size:.8rem;
+"
+>
+
+CURRENT BID
+
+</div>
+
+<div class="price-tag fs-1">
+
+₹{{ product.current_price }}
+
+</div>
+
+</div>
+
+
+<div class="mb-4">
+
+<label
+class="mb-2"
+>
+
+ENTER YOUR BID
+
+</label>
+
+
+<input
+
+required
+
+type="number"
+
+name="amount"
+
+step="1"
+
+min="{{product.current_price|add:1}}"
+
+class="form-control"
+
+placeholder="Must be greater than current bid"
+
+>
+
+<small class="text-muted">
+
+Minimum:
+₹{{product.current_price|add:1}}
+
+</small>
+
+</div>
+
+
+
+<div
+class="
+glass-panel
+p-3
+mb-4
+small
+"
+>
+
+✔ Bid goes to owner dashboard
+
+<br>
+
+✔ Requires login
+
+<br>
+
+✔ Will remain pending until accepted
+
+</div>
+
+
+<button
+type="submit"
+class="btn-premium w-100 py-3"
+>
+
+CONFIRM BID
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<style>
+
+#bidModal .modal-content{
+
+background:
+
+rgba(8,8,8,.98);
+
+backdrop-filter:
+
+blur(40px);
+
+border-radius:
+
+30px;
+
+color:white;
+
+}
+
+
+#bidModal input{
+
+height:60px;
+
+background:
+
+rgba(255,255,255,.05);
+
+border:
+
+1px solid rgba(255,255,255,.08);
+
+color:white;
+
+border-radius:18px;
+
+}
+
+
+#bidModal input:focus{
+
+background:
+
+rgba(255,255,255,.08);
+
+color:white;
+
+border-color:
+
+rgba(255,255,255,.2);
+
+box-shadow:none;
+
+}
+
+
+#bidModal label{
+
+letter-spacing:1px;
+
+font-size:.85rem;
+
+color:#aaa;
+
+}
+
+
+</style>

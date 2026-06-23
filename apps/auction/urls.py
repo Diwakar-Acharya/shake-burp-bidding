@@ -1,18 +1,18 @@
 from django.urls import path
 
-from .views import *
+from .views import place_bid
 
 
 urlpatterns=[
 
 path(
-'bid/',
-place_bid
-),
 
-path(
-'checkout/<int:bid_id>/',
-checkout
-)
+'bid/',
+
+place_bid,
+
+name='place_bid'
+
+),
 
 ]

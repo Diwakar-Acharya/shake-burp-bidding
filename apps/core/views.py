@@ -1,48 +1,24 @@
 from django.shortcuts import render
-
-from django.utils import timezone
-
-from apps.auction.models import (
-AuctionProduct,
-Bid
-)
+from apps.auction.models import AuctionProduct
 
 
 def home(request):
 
-    product=AuctionProduct.objects.first()
+    product = AuctionProduct.objects.first()
 
-    bids=[]
-
-    highest=None
-
-    ended=False
-
+    ended = True
 
     if product:
-
-        bids=Bid.objects.filter(
-            product=product
-        ).order_by(
-            '-amount'
-        )[:10]
+        ended = product.ended
 
 
-        highest=Bid.objects.filter(
-            product=product
-        ).order_by(
-            '-amount'
-        ).first()
+    context = {
 
+        'product': product,
 
-        if timezone.now()>product.end_time:
+        'ended': ended
 
-            ended=True
-
-            product.active=False
-
-            product.save()
-
+    }
 
     return render(
 
@@ -50,16 +26,6 @@ def home(request):
 
         'core/home.html',
 
-        {
-
-            'product':product,
-
-            'bids':bids,
-
-            'highest':highest,
-
-            'ended':ended
-
-        }
+        context
 
     )

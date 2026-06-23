@@ -3,21 +3,30 @@ from django.urls import path
 from .views import *
 
 
-urlpatterns=[
-
-path(
-'register/',
-register_view
-),
+urlpatterns = [
 
 path(
 'login/',
-login_view
+login_view,
+name='login'
+),
+
+path(
+'register/',
+register_view,
+name='register'
 ),
 
 path(
 'logout/',
-logout_view
-)
+logout_view,
+name='logout'
+),
+
+path(
+'verify/<str:token>/',
+verify_email,
+name='verify'
+),
 
 ]

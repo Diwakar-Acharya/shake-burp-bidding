@@ -1,72 +1,49 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import AuctionProduct, Bid
-from .forms import CheckoutForm
+from django.shortcuts import redirect
+from .models import AuctionProduct
+from .models import Bid
 
 
 def place_bid(request):
 
+
     if not request.user.is_authenticated:
+
         return redirect('/')
 
-    if request.method == "POST":
 
-        amount = request.POST.get('amount')
+    if request.method == 'POST':
 
-        if not amount:
-            return redirect('/')
-
-        try:
-            amount = int(amount)
-        except ValueError:
-            return redirect('/')
-
-        product = AuctionProduct.objects.first()
-
-        if not product:
-            return redirect('/')
-
-        current_price = int(product.current_price)
-
-        # reject lower bids
-        if amount < current_price:
-            return redirect('/')
-
-        Bid.objects.create(
-            user=request.user,
-            amount=amount,
-            product=product
+        product_id = request.POST.get(
+            'product'
         )
 
-        product.current_price = amount
-        product.save()
+        amount = request.POST.get(
+            'amount'
+        )
 
-    return redirect('/')
+
+        product = AuctionProduct.objects.get(
+            id=product_id
+        )
 
 
-def checkout(request, bid_id):
-
-    bid = get_object_or_404(Bid, id=bid_id)
-
-    if request.method == "POST":
-
-        form = CheckoutForm(request.POST)
-
-        if form.is_valid():
-
-            order = form.save(commit=False)
-            order.bid = bid
-            order.save()
+        # BLOCK IF AUCTION ENDED
+        if product.ended:
 
             return redirect('/')
 
-    else:
-        form = CheckoutForm()
 
-    return render(
-        request,
-        'checkout.html',
-        {
-            'form': form,
-            'bid': bid
-        }
-    )
+        Bid.objects.create(
+
+            user=request.user,
+
+            product=product,
+
+            amount=amount,
+
+            status='pending'
+
+        )
+
+
+    return redirect('/')

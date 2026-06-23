@@ -1,63 +1,182 @@
 from django.db import models
-from django.conf import settings
+from django.contrib.auth.models import User
+from django.utils import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
+
+
+# ==========================
+# PRODUCT
+# ==========================
 
 class AuctionProduct(models.Model):
 
-    name = models.CharField(max_length=300)
-    description = models.TextField()
+    name=models.CharField(
+        max_length=300
+    )
 
-    image = models.ImageField(upload_to='products/')
-    image2 = models.ImageField(upload_to='products/', blank=True)
-    image3 = models.ImageField(upload_to='products/', blank=True)
+    description=models.TextField()
 
-    video = models.URLField(blank=True)
-    story = models.TextField(blank=True)
+    story=models.TextField(
+        blank=True,
+        null=True
+    )
 
-    # ✅ INTEGER PRICES (PAISE)
-    starting_price = models.IntegerField(default=0)
-    current_price = models.IntegerField(default=0)
+    image=models.ImageField(
+        upload_to='products/'
+    )
 
-    end_time = models.DateTimeField()
-    active = models.BooleanField(default=True)
+    image2=models.ImageField(
+        upload_to='products/',
+        blank=True,
+        null=True
+    )
 
+    image3=models.ImageField(
+        upload_to='products/',
+        blank=True,
+        null=True
+    )
+
+    video=models.URLField(
+        blank=True,
+        null=True
+    )
+
+    current_price=models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=1
+    )
+
+    active=models.BooleanField(
+        default=True
+    )
+
+    auction_end=models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+
+    @property
+    def ended(self):
+
+        if self.auction_end:
+
+            return timezone.now() > self.auction_end
+
+        return False
+
+
+    def __str__(self):
+
+        return self.name
+
+
+
+
+# ==========================
+# BID
+# ==========================
 
 class Bid(models.Model):
 
-    PAYMENT = [
-        ('pending', 'Pending'),
-        ('paid', 'Paid')
-    ]
+    STATUS=(
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    product = models.ForeignKey(AuctionProduct, on_delete=models.CASCADE)
+        ('pending','Pending'),
 
-    # ✅ INTEGER AMOUNT
-    amount = models.IntegerField(default=0)
+        ('approved','Approved'),
 
-    payment = models.CharField(max_length=20, choices=PAYMENT, default='pending')
-    shipment = models.TextField(blank=True)
+        ('rejected','Rejected')
 
-    created = models.DateTimeField(auto_now_add=True)
+    )
 
 
-class Order(models.Model):
+    user=models.ForeignKey(
 
-    STATUS = [
-        ('pending', 'Pending'),
-        ('paid', 'Paid'),
-        ('shipped', 'Shipped'),
-        ('delivered', 'Delivered')
-    ]
+        User,
 
-    bid = models.OneToOneField(Bid, on_delete=models.CASCADE)
+        on_delete=models.CASCADE
 
-    full_name = models.CharField(max_length=300)
-    phone = models.CharField(max_length=20)
-    address = models.TextField()
-    city = models.CharField(max_length=100)
-    pincode = models.CharField(max_length=20)
+    )
 
-    status = models.CharField(max_length=30, choices=STATUS, default='pending')
 
-    created = models.DateTimeField(auto_now_add=True)
+    product=models.ForeignKey(
+
+        AuctionProduct,
+
+        on_delete=models.CASCADE
+
+    )
+
+
+    amount=models.DecimalField(
+
+        max_digits=12,
+
+        decimal_places=2
+
+    )
+
+
+    created=models.DateTimeField(
+
+        auto_now_add=True
+
+    )
+
+
+    status=models.CharField(
+
+        max_length=20,
+
+        choices=STATUS,
+
+        default='pending'
+
+    )
+
+
+    def __str__(self):
+
+        return f'{self.user} — ₹{self.amount}'
+
+
+
+
+
+# ==========================
+# AUTO PRICE UPDATE
+# ==========================
+
+@receiver(
+    post_save,
+    sender=Bid
+)
+
+def update_product_price(
+
+    sender,
+
+    instance,
+
+    **kwargs
+
+):
+
+
+    if instance.status=="approved":
+
+
+        product=instance.product
+
+
+        if instance.amount > product.current_price:
+
+
+            product.current_price=instance.amount
+
+
+            product.save()

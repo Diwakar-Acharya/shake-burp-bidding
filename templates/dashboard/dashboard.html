@@ -144,6 +144,118 @@
     letter-spacing: 0.5px;
     text-transform: uppercase;
 }
+
+/* =========================
+BID MODERATION COLORS
+========================= */
+
+.approved-badge {
+
+background:
+rgba(
+0,
+255,
+120,
+0.08
+);
+
+border:
+1px solid
+rgba(
+0,
+255,
+120,
+0.3
+);
+
+color:
+#62ffb0;
+
+}
+
+
+
+.rejected-badge {
+
+background:
+rgba(
+255,
+70,
+70,
+0.08
+);
+
+border:
+1px solid
+rgba(
+255,
+70,
+70,
+0.25
+);
+
+color:
+#ff7d7d;
+
+}
+
+
+
+.btn-success{
+
+background:
+linear-gradient(
+135deg,
+#00cc66,
+#00994d
+);
+
+border:none;
+
+}
+
+
+
+.btn-success:hover{
+
+transform:
+translateY(
+-2px
+);
+
+}
+
+
+
+.btn-outline-danger{
+
+border:
+1px solid
+rgba(
+255,
+90,
+90,
+0.4
+);
+
+color:
+#ff8080;
+
+}
+
+
+
+.btn-outline-danger:hover{
+
+background:
+rgba(
+255,
+70,
+70,
+0.12
+);
+
+}
 </style>
 
 <div class="container dashboard-wrapper">
@@ -210,17 +322,115 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for bid in bids %}
-                            <tr>
-                                <td class="fw-bold">{{bid.user.username}}</td>
-                                <td class="text-muted">{{bid.user.email}}</td>
-                                <td class="price-tag fs-5 mb-0" style="text-shadow: none;">₹{{bid.amount}}</td>
-                                <td>
-                                    <span class="status-badge">{{bid.payment}}</span>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
+
+{% for bid in bids %}
+
+<tr>
+
+<td class="fw-bold">
+
+{{bid.user.username}}
+
+{% if bid.user.userprofile.email_verified %}
+
+<span
+class="status-badge approved-badge"
+>
+
+VERIFIED
+
+</span>
+
+{% endif %}
+
+{{bid.user.email}}
+
+</td>
+
+
+<td
+class="price-tag fs-5 mb-0"
+style="text-shadow:none;"
+>
+
+₹{{bid.amount}}
+
+</td>
+
+
+
+<td>
+
+
+{% if bid.status == 'pending' %}
+
+<div
+class="d-flex gap-2"
+>
+
+<a
+
+href="/owner/approve/{{bid.id}}"
+
+class="btn btn-success btn-sm"
+
+>
+
+APPROVE
+
+</a>
+
+
+<a
+
+href="/owner/reject/{{bid.id}}"
+
+class="btn btn-outline-danger btn-sm"
+
+>
+
+REJECT
+
+</a>
+
+
+</div>
+
+
+{% elif bid.status == 'approved' %}
+
+
+<span
+class="status-badge approved-badge"
+>
+
+APPROVED
+
+</span>
+
+
+{% else %}
+
+
+<span
+class="status-badge rejected-badge"
+>
+
+REJECTED
+
+</span>
+
+
+{% endif %}
+
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
                     </table>
                 </div>
             </div>
