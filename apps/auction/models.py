@@ -6,10 +6,6 @@ from django.dispatch import receiver
 
 
 
-# ==========================
-# PRODUCT
-# ==========================
-
 class AuctionProduct(models.Model):
 
     name=models.CharField(
@@ -59,15 +55,54 @@ class AuctionProduct(models.Model):
         blank=True
     )
 
+    winner=models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='won_products'
+    )
+
 
     @property
     def ended(self):
 
         if self.auction_end:
 
-            return timezone.now() > self.auction_end
+            if timezone.now()>self.auction_end:
+
+                if self.active:
+
+                    self.close()
+
+                return True
 
         return False
+
+
+    def close(self):
+
+        top=Bid.objects.filter(
+
+            product=self,
+
+            status='approved'
+
+        ).order_by(
+            '-amount'
+        ).first()
+
+
+        if top:
+
+            self.winner=top.user
+
+            self.current_price=top.amount
+
+
+        self.active=False
+
+        self.save()
 
 
     def __str__(self):
@@ -76,10 +111,6 @@ class AuctionProduct(models.Model):
 
 
 
-
-# ==========================
-# BID
-# ==========================
 
 class Bid(models.Model):
 
@@ -95,88 +126,58 @@ class Bid(models.Model):
 
 
     user=models.ForeignKey(
-
         User,
-
         on_delete=models.CASCADE
-
     )
 
 
     product=models.ForeignKey(
-
         AuctionProduct,
-
         on_delete=models.CASCADE
-
     )
 
 
     amount=models.DecimalField(
-
         max_digits=12,
-
         decimal_places=2
-
     )
 
 
     created=models.DateTimeField(
-
         auto_now_add=True
-
     )
 
 
     status=models.CharField(
-
         max_length=20,
-
         choices=STATUS,
-
         default='pending'
-
     )
 
 
     def __str__(self):
 
-        return f'{self.user} — ₹{self.amount}'
+        return f'{self.user} - ₹{self.amount}'
 
 
 
-
-
-# ==========================
-# AUTO PRICE UPDATE
-# ==========================
 
 @receiver(
     post_save,
     sender=Bid
 )
-
-def update_product_price(
-
+def update_price(
     sender,
-
     instance,
-
     **kwargs
-
 ):
 
-
-    if instance.status=="approved":
-
+    if instance.status=='approved':
 
         product=instance.product
 
-
-        if instance.amount > product.current_price:
-
+        if instance.amount>product.current_price:
 
             product.current_price=instance.amount
-
 
             product.save()
